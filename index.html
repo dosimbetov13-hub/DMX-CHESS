@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DMX CHESS</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#222222">
+<style>
+body{margin:0;background:#222;display:flex;justify-content:center;align-items:center;height:100vh}
+#d{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:min(95vw,95vh);height:min(95vw,95vh)}
+.k{display:flex;justify-content:center;align-items:center;font-size:8vmin}
+.och{background:#eed}.to{background:#7a5}
+.t{background:#fc3}
+#nom{position:fixed;top:0;left:0;right:0;text-align:center;color:#fc3;font:bold 6vmin sans-serif;letter-spacing:3px;padding:8px 0;z-index:5}
+</style>
+</head>
+<body>
+<div id="nom" style="position:fixed;top:60px;left:0;right:0;text-align:center;color:#fc3;font:bold 9vmin sans-serif;letter-spacing:3px;z-index:5">DMX CHESS</div>
+<div id="d"></div>
+<script>
+const belgi={K:"♔",Q:"♕",R:"♖",B:"♗",N:"♘",P:"♙",k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟\uFE0E"};
+let taxta=["rnbqkbnr","pppppppp","........","........","........","........","PPPPPPPP","RNBQKBNR"].map(q=>q.split(""));
+let tanlangan=null;
+let navbat="w";
+const d=document.getElementById("d");
+const oq=ch=>ch!="."&&ch==ch.toUpperCase();
+const ichida=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
+
+function chiz(){
+  d.innerHTML="";
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const x=document.createElement("div");
+    x.className="k "+((r+c)%2?"to":"och");
+    if(tanlangan&&tanlangan[0]==r&&tanlangan[1]==c)x.classList.add("t");
+    x.textContent=belgi[taxta[r][c]]||"";
+    x.onclick=()=>bos(r,c);
+    d.appendChild(x);
+  }
+}
+
+function yurishlar(r,c){
+  const ch=taxta[r][c], t=ch.toLowerCase(), m=[];
+  const rang=oq(ch);
+  const dushman=(a,b)=>taxta[a][b]!="."&&oq(taxta[a][b])!=rang;
+  const bosh=(a,b)=>taxta[a][b]==".";
+  const yur=(dirs,uzoq)=>{
+    for(const [dr,dc] of dirs){
+      let a=r+dr,b=c+dc;
+      while(ichida(a,b)){
+        if(bosh(a,b))m.push([a,b]);
+        else{if(dushman(a,b))m.push([a,b]);break;}
+        if(!uzoq)break;
+        a+=dr;b+=dc;
+      }
+    }
+  };
+  const tik=[[1,0],[-1,0],[0,1],[0,-1]];
+  const yon=[[1,1],[1,-1],[-1,1],[-1,-1]];
+  if(t=="r")yur(tik,true);
+  if(t=="b")yur(yon,true);
+  if(t=="q")yur([...tik,...yon],true);
+  if(t=="k")yur([...tik,...yon],false);
+  if(t=="n"){
+    for(const [dr,dc] of [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]]){
+      const a=r+dr,b=c+dc;
+      if(ichida(a,b)&&(bosh(a,b)||dushman(a,b)))m.push([a,b]);
+    }
+  }
+  if(t=="p"){
+    const dd=rang?-1:1, bq=rang?6:1;
+    if(ichida(r+dd,c)&&bosh(r+dd,c)){
+      m.push([r+dd,c]);
+      if(r==bq&&bosh(r+2*dd,c))m.push([r+2*dd,c]);
+    }
+    for(const dc of [-1,1])
+      if(ichida(r+dd,c+dc)&&dushman(r+dd,c+dc))m.push([r+dd,c+dc]);
+  }
+  return m;
+}
+
+function bos(r,c){
+  if(tanlangan){
+    const [a,b]=tanlangan;
+    if(yurishlar(a,b).some(([x,y])=>x==r&&y==c)){
+      taxta[r][c]=taxta[a][b];taxta[a][b]=".";
+      if(taxta[r][c]=="P"&&r==0)taxta[r][c]="Q";
+      if(taxta[r][c]=="p"&&r==7)taxta[r][c]="q";
+      navbat=navbat=="w"?"b":"w";
+      tanlangan=null;chiz();return;
+    }
+    tanlangan=null;
+  }
+  const ch=taxta[r][c];
+  if(ch!="."&&(oq(ch)?"w":"b")==navbat)tanlangan=[r,c];
+  chiz();
+}
+chiz();
+</script>
+<script src="bot.js"></script>
+<script src="qosh.js"></script>
+<script src="qoida.js"></script>
+<script src="rokirovka.js"></script>
+<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
+</body>
+  </html>
