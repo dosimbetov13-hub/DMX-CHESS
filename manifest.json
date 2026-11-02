@@ -1,0 +1,11 @@
+{
+  "name": "DMX CHESS",
+  "short_name": "DMX CHESS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#222222",
+  "theme_color": "#222222",
+  "icons": [
+    {"src": "ikonka512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}
