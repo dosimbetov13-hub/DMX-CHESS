@@ -50,7 +50,7 @@ const old=chiz;
 chiz=function(){
   old();
   const now=taxta.map(q=>q.join(""));
-  if(now.join("")==BOSH){list=[];}
+  if(window.__undo){list.splice(-2);window.__undo=false;}else if(now.join("")==BOSH){list=[];}
   else if(prev){
     const df=[];
     for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(prev[r][c]!=now[r][c])df.push([r,c]);
