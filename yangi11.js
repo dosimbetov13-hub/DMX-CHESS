@@ -56,4 +56,8 @@ window.alert=function(msg){
   if(ikki){
     korsat("\uD83C\uDFC6",g=="w"?"Oq yutdi!":"Qora yutdi!",sabab);
   }else{
-    if(g=="w")korsat("\uD83C\ 
+    if(g=="w")korsat("\uD83C\uDFC6","Yutdingiz!",sabab);
+    else korsat("\uD83D\uDE14","Yutqazdingiz",sabab);
+  }
+};
+})();
